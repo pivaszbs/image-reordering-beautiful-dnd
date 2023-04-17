@@ -1,39 +1,49 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+import {ReactNode, useState} from "react";
+import React from 'react';
 import "./App.css";
+import {createRange} from "./createRange";
+import {ListManager} from "./DNDHelper";
+import {reorder} from "./reorder";
+import {DropResult} from "react-beautiful-dnd";
+import {Image} from "./Image";
+
+const initialItems = createRange<{ id: number; value: string }>(
+    16,
+    (index) => ({
+        id: index,
+        index,
+        value: `https://picsum.photos/id/${index}/200/200`,
+    })
+);
+
 
 function App() {
-  const [count, setCount] = useState(0);
+    const [items, setItems] = useState(initialItems);
+
+    function handleDragEnd({ destination, source }: Partial<DropResult>) {
+        if (!destination || !source) {
+            return;
+        }
+
+        if (destination.index === source.index) {
+            return;
+        }
+
+        setItems((items) => {
+            return reorder(items, source.index, destination.index);
+        });
+    }
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-      </div>
-      <h1>React + Vite</h1>
-      <h2>On CodeSandbox!</h2>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR.
-        </p>
-
-        <p>
-          Tip: you can use the inspector button next to address bar to click on
-          components in the preview and open the code in the editor!
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+      <ListManager
+          chunkClassName={'chunk'}
+          items={initialItems}
+          maxItems={2}
+          render={({ id, value }, index) => (
+              <Image src={value} key={id} />
+          )}
+          direction={'horizontal'}
+          onDragEnd={handleDragEnd} />
   );
 }
 
