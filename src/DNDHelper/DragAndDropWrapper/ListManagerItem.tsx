@@ -16,7 +16,6 @@ export function ListManagerItem<T extends { id: string }>({
   itemClassName,
   isDisabled,
 }: ListManagerItemProps<T>) {
-  console.log(isDisabled, item.id);
   return (
     <Draggable isDragDisabled={isDisabled} draggableId={item.id} index={index}>
       {(provided: DraggableProvided) => (
