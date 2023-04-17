@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd';
 
-export interface ListManagerItemProps<T> {
+export interface ListManagerItemProps<T extends { id: string }> {
   item: T;
   index: number;
   render(item: T, index: number): ReactNode;
@@ -9,12 +9,9 @@ export interface ListManagerItemProps<T> {
   isDisabled?: boolean;
 }
 
-export function ListManagerItem<T>({ item, index, render, itemClassName, isDisabled }: ListManagerItemProps<T>) {
+export function ListManagerItem<T extends { id: string }>({ item, index, render, itemClassName, isDisabled }: ListManagerItemProps<T>) {
     return (
-        // Хак с valueId для того чтобы загружающиеся картинки и кнопка загрузки картинки не была draggable
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        <Draggable isDragDisabled={isDisabled || !item.valueId} draggableId={item.valueId} index={index}>
+        <Draggable isDragDisabled={isDisabled} draggableId={item.id} index={index}>
             {(provided: DraggableProvided) => (
                 <div
                     ref={provided.innerRef}

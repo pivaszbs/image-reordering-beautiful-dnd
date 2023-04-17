@@ -37,7 +37,7 @@ function App() {
   return (
       <ListManager
           chunkClassName={'chunk'}
-          items={initialItems}
+          items={items}
           maxItems={2}
           render={({ id, value }, index) => (
               <Image src={value} key={id} />
